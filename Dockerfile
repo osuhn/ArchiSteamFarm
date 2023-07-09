@@ -75,6 +75,14 @@ EXPOSE 1242
 WORKDIR /app
 COPY --from=build-dotnet /app/out/result .
 
+# verify if /app/config/ASF.json exists, if not, create it from default config
+RUN set -eu; \
+	mkdir -p /app/config; \
+	echo "{\"IPC\": true}" > /app/config/ASF-default.json; \
+	if [ ! -f /app/config/ASF.json ]; then \
+		cp /app/config/ASF-default.json /app/config/ASF.json; \
+	fi
+
 RUN set -eu; \
     groupadd -r -g 1000 asf; \
     useradd -r -d /app -g 1000 -u 1000 asf; \
