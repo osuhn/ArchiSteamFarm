@@ -75,10 +75,10 @@ EXPOSE 1242
 WORKDIR /app
 COPY --from=build-dotnet /app/out/result .
 
-# verify if /app/config/ASF.json exists, if not, create it from default config
 RUN set -eu; \
 	mkdir -p /app/config; \
-	echo "{\"IPC\": true}" > /app/config/ASF-default.json; \
+	echo "{\n  \"IPC\": true}" > /app/config/ASF-default.json; \
+	echo "{\r\n\t\"Kestrel\": {\r\n\t\t\"Endpoints\": {\r\n\t\t\t\"HTTP\": {\r\n\t\t\t\t\"Url\": \"http://*:1242\"\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}" > /app/config/IPC.config; \
 	if [ ! -f /app/config/ASF.json ]; then \
 		cp /app/config/ASF-default.json /app/config/ASF.json; \
 	fi
